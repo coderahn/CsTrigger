@@ -1,0 +1,15 @@
+package com.myapp.CsTrigger.controller;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@Slf4j
+public class TriggerController {
+    @PostMapping("event/trigger")
+    public String test() {
+        log.info("trigger success");
+        return "success";
+    }
+}
