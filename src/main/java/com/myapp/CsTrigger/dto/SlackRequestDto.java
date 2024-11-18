@@ -19,4 +19,5 @@ public class SlackRequestDto {
     private List<Authorization> authorizations; // 배열
     private boolean isExtSharedChannel;  // is_ext_shared_channel -> isExtSharedChannel
     private String eventContext;  // event_context -> eventContext
+    private String challenge;
 }

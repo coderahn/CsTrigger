@@ -30,6 +30,7 @@ public class TriggerController {
 
         //2.응답 처리
         Map<String, String> responseBody = new HashMap<>();
+        responseBody.put("challenge", String.valueOf(slackRequestDto.getChallenge()));
 
         return ResponseEntity.ok(responseBody);
     }
