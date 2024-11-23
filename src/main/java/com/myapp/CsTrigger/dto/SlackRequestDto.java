@@ -7,6 +7,7 @@ import java.util.List;
 
 @Data
 public class SlackRequestDto {
+    //event description 정보
     private String token;
     private String teamId;  // team_id -> teamId
     private String contextTeamId;  // context_team_id -> contextTeamId
@@ -20,4 +21,6 @@ public class SlackRequestDto {
     private boolean isExtSharedChannel;  // is_ext_shared_channel -> isExtSharedChannel
     private String eventContext;  // event_context -> eventContext
     private String challenge;
+
+    //user api 호출 정보
 }

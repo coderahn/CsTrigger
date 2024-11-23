@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# 민감한 데이터 파일을 Git에서 무시하도록 설정
+PrivateDataInfo.java

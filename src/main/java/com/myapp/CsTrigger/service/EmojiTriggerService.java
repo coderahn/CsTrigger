@@ -1,10 +1,13 @@
 package com.myapp.CsTrigger.service;
 
 import com.myapp.CsTrigger.dto.SlackRequestDto;
+import com.myapp.CsTrigger.util.PrivateDataInfo;
 import com.slack.api.Slack;
 import com.slack.api.methods.SlackApiException;
 import com.slack.api.methods.request.conversations.ConversationsHistoryRequest;
+import com.slack.api.methods.request.users.UsersInfoRequest;
 import com.slack.api.methods.response.conversations.ConversationsHistoryResponse;
+import com.slack.api.methods.response.users.UsersInfoResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -14,20 +17,40 @@ import java.io.IOException;
 @Slf4j
 public class EmojiTriggerService {
     /**
-     * 이모지 트리거 프로세스
+     * 유저정보 가져오기(CS처리자)
+     * @param slackRequestDto
+     */
+    public void getUserInfo(SlackRequestDto slackRequestDto) throws SlackApiException, IOException {
+        String userId = slackRequestDto.getEvent().getUser();
+
+        // Slack 인스턴스 생성
+        Slack slack = Slack.getInstance();
+
+        // 유저 정보 요청
+        UsersInfoRequest request = UsersInfoRequest.builder()
+                .token(PrivateDataInfo.SLACK_TOKEN)
+                .user(userId)
+                .build();
+
+        // 유저 정보 가져오기
+        UsersInfoResponse response = slack.methods().usersInfo(request);
+
+        //TODO: error(mssing_scope / need:users_read)
+    }
+
+
+    /**
+     * CS 메시지 가져오기
      * @param slackRequestDto
      * @return
      */
-    public String emojiTriggerProcess(SlackRequestDto slackRequestDto) {
-        //dto에서 전송된 이모지 값 꺼내기(event.item.type) => enum처리
-        //이모지 값에 따른 처리
-            //white_check_mark cs데이터 처리
-            //event.item.channel, event.item.ts를 받아서 다시 api호출해야 message를 받을 수 있음
+    public String getCsMessage(SlackRequestDto slackRequestDto) {
         String reaction = slackRequestDto.getEvent().getReaction();
 
         if ("white_check_mark".equals(reaction)) {
             String channelId = slackRequestDto.getEvent().getItem().getChannel();
             String ts = slackRequestDto.getEvent().getItem().getTs();
+
             this.getContents(channelId, ts);
         } else {
             //TODO: 기타 이모지
@@ -82,7 +105,7 @@ public class EmojiTriggerService {
     private ConversationsHistoryRequest setRequest(String channelId, String ts) {
         // conversations.history API 요청 생성
         ConversationsHistoryRequest request = ConversationsHistoryRequest.builder()
-                .token("토큰값!") //TODO : 환경변수처리
+                .token(PrivateDataInfo.SLACK_TOKEN) //TODO : 환경변수처리 필요. 우선 private클래스로 관리후 gitignore
                 .channel(channelId)
                 .latest(ts)  // 타임스탬프를 기준으로 메시지 가져오기
                 .inclusive(true)  // 해당 타임스탬프의 메시지도 포함
@@ -90,4 +113,6 @@ public class EmojiTriggerService {
                 .build();
         return request;
     }
+
+
 }
